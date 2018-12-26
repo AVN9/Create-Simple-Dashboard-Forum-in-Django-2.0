@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{% url 'board_topics' board.pk %}" method="post">
+  <form action="{% url 'new_topic' board.pk %}" method="post">
     {% csrf_token %}
     <div class="form-group">
       <label for="id_subject">Subject</label>
