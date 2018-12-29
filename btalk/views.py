@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from btalk.models import Board, Topic, Post
 from btalk.forms import NewTopicForm
