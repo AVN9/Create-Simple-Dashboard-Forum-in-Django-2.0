@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+
 from btalk.models import Board, Topic, Post
 from btalk.forms import NewTopicForm, PostForm
 
@@ -59,3 +61,18 @@ def reply_topic(request, pk, topic_pk):
     else:
         form = PostForm()
     return render(request, 'reply_topic.html', {'topic': topic, 'form': form})
+
+@login_required
+def edit_post(request, pk, topic_pk, post_pk):
+    post = get_object_or_404(Post, topic__board__pk=pk, topic__pk=topic_pk,pk=post_pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.message = form.cleaned_data.get('message')
+            post.updated_by = request.user
+            post.updated_at = timezone.now()
+            post.save()
+            return HttpResponseRedirect(reverse('topic_posts', kwargs={'pk': pk, 'topic_pk': topic_pk})) 
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'edit_post.html', {'post': post, 'form': form})
